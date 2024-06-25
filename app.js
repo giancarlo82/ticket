@@ -6,6 +6,7 @@ dotenv.config({
 });
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const cors = require("cors");
 
 // Set up the express app
 app.use(express.static("public"));
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+app.use(cors());
 
 // setup middleware
 const authMiddleware = require("./middlewares/authMiddleware");
