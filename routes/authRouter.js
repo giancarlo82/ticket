@@ -4,6 +4,10 @@ const utils = require("../utils");
 const authRouter = express.Router();
 
 authRouter.get("/login", (req, res) => {
+    
+  // check if "data/daily/" exists
+  utils.checkDailyFolderThanCreate();
+
   res.render("auth/login", {
     message: "",
   });

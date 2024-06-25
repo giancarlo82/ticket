@@ -1,4 +1,9 @@
+const utils = require("../utils/");
+
 const authMiddleware = (req, res, next) => {
+  // check if "data/daily/" exists
+  utils.checkDailyFolderThanCreate();
+
   let isAuthenticated = false;
 
   const session = req.cookies.session;

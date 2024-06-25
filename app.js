@@ -6,7 +6,6 @@ dotenv.config({
 });
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const utils = require("./utils");
 
 // Set up the express app
 app.use(express.static("public"));
@@ -18,9 +17,6 @@ app.set("view engine", "ejs");
 
 // setup middleware
 const authMiddleware = require("./middlewares/authMiddleware");
-
-// check if "data/daily/" exists
-utils.checkDailyFolderThanCreate();
 
 // Import routes
 const authRouter = require("./routes/authRouter");

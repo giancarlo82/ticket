@@ -5,6 +5,10 @@ const utils = require("../utils");
 // ***** app use /ticket prefix ***** //
 
 ticketRouter.get("/", async (req, res) => {
+  
+  // check if "data/daily/" exists
+  utils.checkDailyFolderThanCreate();
+
   // recupero la lista dei servizi
   const services = await utils.readJsonDataFile("services_list", "settings");
 
