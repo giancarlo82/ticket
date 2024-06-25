@@ -19,3 +19,6 @@ config/.env
 # Ignora i file di configurazione di sistema
 .DS_Store
 Thumbs.db
+
+# Ignora i file di vscode
+.vscode
