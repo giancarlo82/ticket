@@ -1,0 +1,408 @@
+<%- include('./partials/head') %>
+<div class="centrato_iniziale" id="centrato_iniziale">
+  <button class="btn border p-3 rounded box-shadow" id="fullscreen-button">
+    Avvia Monitor a schermo intero
+  </button>
+</div>
+<div
+  class="monitor_container"
+  id="monitor_container"
+  style="display: none; margin-top: -50px"
+>
+  <div class="top_container">
+    <div class="date_time_container">
+      <div class="day_container"></div>
+      <div class="time_container"></div>
+    </div>
+  </div>
+  <div class="bottom_container">
+    <div class="left_container">
+      <div id="big_box"></div>
+    </div>
+    <div class="right_container">
+      <div class="stacked_box" id="uno"></div>
+      <div class="stacked_box" id="due"></div>
+      <div class="stacked_box" id="tre"></div>
+      <div class="stacked_box" id="quattro"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Aggiungi un elemento audio -->
+<audio id="notification-sound" src="/coin.wav"></audio>
+
+<script>
+  let audioAllowed = false;
+
+  document.addEventListener("click", () => {
+    if (!audioAllowed) {
+      // document
+      //   .getElementById("notification-sound")
+      //   .play()
+      //   .catch((e) => {
+      //     console.log("Failed to play audio:", e);
+      //   });
+      audioAllowed = true;
+    }
+  });
+
+  const getLastTicketCalled = () => {
+    fetch("/ticket/last")
+      .then((response) => response.json())
+      .then((data) => {
+        data.sort((a, b) => new Date(b.called_at) - new Date(a.called_at));
+        data = data.slice(0, 5);
+
+        // data chiave 0, se c'è, lo metto nel big_box
+        if (data[0]) {
+          const ticket = data[0];
+          document.getElementById("big_box").innerHTML = `
+            <div class="ticket_container">
+            <div class="ticket_code" style="text-shadow: 2px 2px 2px red;">${ticket.ticket_code}</div>
+            <p class="label_ticket_monitor" style="text-shadow: 2px 2px 2px red;">${ticket.customer_name}</p>
+            <div class="desk_name" style="text-shadow: 2px 2px 2px red;">${ticket.desk_name}</div>
+          </div>
+          `;
+        }
+
+        // data chiave 1, se c'è, lo metto nel primo stacked_box
+        if (data[1]) {
+          const ticket = data[1];
+          document.getElementById("uno").innerHTML = miniCard(
+            ticket.ticket_code,
+            ticket.desk_name
+          );
+        }
+
+        // data chiave 2, se c'è, lo metto nel secondo stacked_box
+        if (data[2]) {
+          const ticket = data[2];
+          document.getElementById("due").innerHTML = miniCard(
+            ticket.ticket_code,
+            ticket.desk_name
+          );
+        }
+
+        // data chiave 3, se c'è, lo metto nel terzo stacked_box
+        if (data[3]) {
+          const ticket = data[3];
+          document.getElementById("tre").innerHTML = miniCard(
+            ticket.ticket_code,
+            ticket.desk_name
+          );
+        }
+
+        // data chiave 4, se c'è, lo metto nel quarto stacked_box
+        if (data[4]) {
+          const ticket = data[4];
+          document.getElementById("quattro").innerHTML = miniCard(
+            ticket.ticket_code,
+            ticket.desk_name
+          );
+        }
+
+        // suono notifica
+        document.getElementById("notification-sound").play();
+      });
+  };
+
+  const miniCard = (ticket_code, desk_name) => {
+    return `
+        <div class="mini_container">
+            <div class="mini_ticket_code">${ticket_code}</div>
+            <p class="mini_ticket_desk">${desk_name}</p>
+        </div>
+    `;
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    getLastTicketCalled();
+
+    document.querySelector(".day_container").innerText =
+      new Date().toLocaleDateString("it-IT", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+    setInterval(() => {
+      document.querySelector(".time_container").innerText =
+        new Date().toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+    }, 1000);
+  });
+
+  const socket = io();
+  socket.on("my_ticket", () => {
+    getLastTicketCalled();
+  });
+</script>
+
+<script>
+  document
+    .getElementById("fullscreen-button")
+    .addEventListener("click", function () {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.mozRequestFullScreen) {
+        // Firefox
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        // Chrome, Safari and Opera
+        document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.msRequestFullscreen) {
+        // IE/Edge
+        document.documentElement.msRequestFullscreen();
+      }
+
+      // display none al pulsante
+      document.getElementById("centrato_iniziale").style.display = "none";
+      document.getElementById("monitor_container").style.display = "block";
+      document.getElementById("monitor_container").style.marginTop = "-100 px";
+    });
+
+  document.addEventListener("fullscreenchange", function () {
+    if (!document.fullscreenElement) {
+      console.log("Exited fullscreen mode");
+      document.getElementById("centrato_iniziale").style.display = "block";
+      document.getElementById("monitor_container").style.display = "none";
+    }
+  });
+
+  document.addEventListener("mozfullscreenchange", function () {
+    if (!document.mozFullScreenElement) {
+      console.log("Exited fullscreen mode");
+      document.getElementById("centrato_iniziale").style.display = "block";
+      document.getElementById("monitor_container").style.display = "none";
+    }
+  });
+
+  document.addEventListener("webkitfullscreenchange", function () {
+    if (!document.webkitFullscreenElement) {
+      console.log("Exited fullscreen mode");
+      document.getElementById("centrato_iniziale").style.display = "block";
+      document.getElementById("monitor_container").style.display = "none";
+    }
+  });
+
+  document.addEventListener("msfullscreenchange", function () {
+    if (!document.msFullscreenElement) {
+      console.log("Exited fullscreen mode");
+      document.getElementById("centrato_iniziale").style.display = "block";
+      document.getElementById("monitor_container").style.display = "none";
+    }
+  });
+</script>
+
+<style>
+  .centrato_iniziale {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+  }
+
+  #fullscreen-button {
+    background: transparent;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    color: black;
+    font-size: 3em;
+  }
+
+  #fullscreen-button:hover {
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+    background-color: red;
+    font-size: 3em;
+  }
+
+  /* #fullscreen-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: transparent;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    color: black;
+  }
+
+  #fullscreen-button svg {
+    width: 24px;
+    height: 24px;
+    fill: black;
+  } */
+
+  .monitor_container {
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+
+    border-radius: 5px;
+    margin: 10px;
+  }
+
+  .top_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20vh;
+    border-radius: 5px;
+    margin: 0 10px;
+    padding: 10px;
+  }
+
+  .date_time_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .day_container,
+  .time_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .day_container {
+    flex: 1;
+    font-size: 1.5em;
+    margin-right: 10px;
+  }
+
+  .time_container {
+    flex: 1;
+    font-size: 1.5em;
+    font-weight: 900;
+    margin-left: 10px;
+  }
+
+  .bottom_container {
+    display: flex;
+    flex-direction: row;
+    height: 80vh;
+
+    border-radius: 5px;
+    margin: 10px;
+  }
+
+  .left_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 98%;
+
+    border-radius: 5px;
+    margin: 10px;
+    flex: 1 1 50%;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  #big_box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    border: 2px solid red;
+    box-shadow: 0 0 5px red;
+    border-radius: 5px;
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    margin: 20px;
+    box-sizing: border-box;
+    padding: 20px;
+  }
+
+  .ticket_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .ticket_code {
+    font-size: 15em;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .desk_name {
+    font-size: 9em;
+    text-align: center;
+  }
+
+  .label_ticket_monitor {
+    font-size: 4em;
+    text-align: center;
+  }
+
+  .right_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+    height: 98%;
+
+    border-radius: 5px;
+    margin: 10px;
+    flex: 1 1 50%;
+    box-sizing: border-box;
+  }
+
+  .stacked_box {
+    background-color: white;
+    border: 2px solid red;
+    flex: 1 1 calc((100% - 30px) / 4); /* Divide l'altezza disponibile per 4, meno i margini */
+    margin: 5px 10px; /* 10px di margine sui lati, 5px di margine sopra e sotto */
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-shadow: 1px 1px 1px red;
+    box-shadow: 0 0 5px red;
+  }
+
+  .mini_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .mini_ticket_code {
+    font-size: 5em;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mini_ticket_desk {
+    font-size: 3em;
+    text-align: center;
+  }
+</style>

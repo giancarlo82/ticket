@@ -1,0 +1,16 @@
+{
+  "desks": [
+    {
+      "id": 1,
+      "name": "Cassa 1",
+      "code": "C1",
+      "color": "#FF0000"
+    },
+    {
+      "id": 2,
+      "name": "Cassa 2",
+      "code": "C2",
+      "color": "#00FF00"
+    }
+  ]
+}

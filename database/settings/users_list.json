@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Giancarlo Uzzo",
+      "email": "mio@mio.it",
+      "password": "111"
+    },
+    {
+      "id": 2,
+      "name": "Jane Doe",
+      "email": "tuo@tuo.it",
+      "password": "222"
+    }
+  ]
+}

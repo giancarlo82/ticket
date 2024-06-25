@@ -1,0 +1,21 @@
+# Ignora i moduli Node.js installati
+/node_modules
+
+# Ignora i file di log
+/database/daily/*/*.json
+
+# Ignora i file di configurazione locali
+config/.env
+
+# Ignora i file di build
+/build
+
+# Ignora i file di cache
+/.cache
+
+# Ignora i file di backup
+*.bak
+
+# Ignora i file di configurazione di sistema
+.DS_Store
+Thumbs.db

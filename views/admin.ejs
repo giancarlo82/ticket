@@ -1,0 +1,245 @@
+<%- include('./partials/head') %>
+
+<style>
+  #bookings-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    height: 50vh;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px;
+  }
+
+  #lastTicket-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    height: 15vh;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px;
+  }
+
+  .service-container {
+    flex: 1 1 15%;
+    margin: 10px;
+    min-width: 250px;
+  }
+
+  .ticket-box {
+    flex: 1 1 15%;
+    margin: 10px;
+    min-width: 100px;
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .service-container,
+    .ticket-box {
+      flex: 1 1 100%;
+    }
+  }
+</style>
+
+<div class="row" id="desks-container" style="margin: 10px 0">
+  <div class="col-3 text-center">
+    <label for="">Scegli il desk</label>
+    <select name="" class="form-select text-center" id="desk-select">
+      <% desks.forEach(desk => { %>
+      <option value="<%= desk.id %>"><%= desk.name %></option>
+      <% }) %>
+    </select>
+  </div>
+</div>
+
+<div class="row mt-6" id="bookings-container"></div>
+
+<div class="row mt-6" id="lastTicket-container"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    window.scrollTo(0, 0);
+    getServices();
+    getLastTicketCalled();
+
+    // set desk in local storage
+    const deskSelect = document.querySelector("select");
+    if (!localStorage.getItem("desk")) localStorage.setItem("desk", 1);
+    deskSelect.addEventListener("change", (e) => {
+      localStorage.setItem("desk", e.target.value);
+    });
+
+    var selectedDeskId = localStorage.getItem("desk");
+
+    if (selectedDeskId) {
+      // Seleziona l'elemento <select>
+      var selectElement = document.getElementById("desk-select");
+
+      // Imposta l'opzione selezionata basandosi sul valore di localStorage
+      selectElement.value = selectedDeskId;
+    }
+  });
+
+  const getServices = () => {
+    fetch("/ticket/services")
+      .then((response) => response.json())
+      .then((services) => {
+        renderServiceContainers(services);
+        getBookings();
+      });
+  };
+
+  const getLastTicketCalled = () => {
+    fetch("/ticket/last")
+      .then((response) => response.json())
+      .then((data) => {
+        data.sort((a, b) => new Date(b.called_at) - new Date(a.called_at));
+        data = data.slice(0, 5);
+        renderLastTickets(data);
+      });
+  };
+
+  const renderServiceContainers = (services) => {
+    const container = document.getElementById("bookings-container");
+    container.classList.add("d-flex", "flex-wrap");
+    services.forEach((service) => {
+      const serviceContainer = document.createElement("div");
+      serviceContainer.className = "service-container";
+      serviceContainer.id = `service${service.id}-container`;
+
+      const serviceTitle = document.createElement("h4");
+      serviceTitle.className = "text-center";
+      serviceTitle.id = `service${service.id}-title`;
+      serviceTitle.textContent = service.name;
+
+      const hr = document.createElement("hr");
+
+      serviceContainer.appendChild(serviceTitle);
+      serviceContainer.appendChild(hr);
+      container.appendChild(serviceContainer);
+    });
+  };
+
+  const renderLastTickets = (tickets) => {
+    const container = document.getElementById("lastTicket-container");
+    container.innerHTML = "";
+    tickets.forEach((ticket) => {
+      console.log(ticket);
+      const ticketBox = document.createElement("div");
+      ticketBox.className = "ticket-box";
+      ticketBox.style.background = ticket.service_color;
+      ticketBox.innerHTML = `
+        <div>
+          <strong>${ticket.ticket_code} - ${ticket.desk_name}</strong><br>
+          ${ticket.customer_name}<br>
+          ${new Date(ticket.called_at).toLocaleString()} <br>
+          <small><i>${ticket.service_name}</i></small>
+        </div>
+      `;
+      container.appendChild(ticketBox);
+    });
+  };
+
+  const getBookings = () => {
+    fetch("/ticket/list")
+      .then((response) => response.json())
+      .then((data) => {
+        renderBookings(data);
+      });
+  };
+
+  const renderBookings = (bookings) => {
+    const serviceContainers = {};
+    const serviceTitles = {};
+    const defaultServiceNames = {};
+
+    const containerElements = document.querySelectorAll(
+      "[id^=service][id$=-container]"
+    );
+    containerElements.forEach((container) => {
+      const id = container.id.match(/service(\d+)-container/)[1];
+      serviceContainers[id] = container;
+      serviceTitles[id] = document.getElementById(`service${id}-title`);
+      defaultServiceNames[id] = serviceTitles[id].textContent;
+    });
+
+    for (let id in serviceContainers) {
+      const container = serviceContainers[id];
+      while (container.children.length > 2) {
+        container.removeChild(container.lastChild);
+      }
+    }
+
+    const groupedBookings = bookings.reduce((acc, booking) => {
+      if (!acc[booking.service_id]) {
+        acc[booking.service_id] = [];
+      }
+      acc[booking.service_id].push(booking);
+      return acc;
+    }, {});
+
+    for (let service_id in groupedBookings) {
+      const bookings = groupedBookings[service_id].slice(0, 1);
+      const container = serviceContainers[service_id];
+      const title = serviceTitles[service_id];
+
+      if (bookings.length > 0) {
+        title.innerText =
+          bookings[0].service_name || defaultServiceNames[service_id];
+      }
+
+      bookings.forEach((booking) => {
+        const bookingElement = document.createElement("div");
+        bookingElement.className = "service_type text-center";
+        bookingElement.style.fontWeight = "900";
+        bookingElement.style.background = booking.service_color;
+        bookingElement.id = booking.id;
+        bookingElement.innerHTML =
+          booking.code + "<br>" + booking.customer_name;
+        bookingElement.setAttribute(
+          "onclick",
+          `callTicket('${booking.code}', this)`
+        );
+
+        container.appendChild(bookingElement);
+      });
+    }
+  };
+
+  const socket = io();
+  const callTicket = (ticket_code, button) => {
+    button.innerHTML = `<div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>`;
+    socket.emit("call_ticket", ticket_code, localStorage.getItem("desk"));
+    setTimeout(() => {
+      getBookings();
+      getLastTicketCalled();
+    }, 1000);
+  };
+
+  socket.on("new_ticket", (ticket_code) => {
+    getBookings();
+    getLastTicketCalled();
+  });
+
+  socket.on("delete_ticket", (ticket_code) => {
+    getBookings();
+  });
+
+  socket.on("my_ticket", (ticket_code) => {
+    setTimeout(() => {
+      getBookings();
+      getLastTicketCalled();
+    }, 1000);
+  });
+</script>
+
+<%- include('./partials/footer') %>

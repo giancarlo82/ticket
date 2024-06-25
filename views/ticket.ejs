@@ -1,0 +1,222 @@
+<%- include('./partials/head') %>
+
+<div class="container" id="princ_container">
+  <div class="p-5 text-center border rounded">
+    <div class="row">
+      <div class="col-12">
+        <img class="d-block mx-auto mb-4" src="https://www.creativefabrica.com/wp-content/uploads/2022/01/09/ticket-icon-template-Graphics-23210275-1.jpg" alt="" width="200" />
+        <h3 id="titolo_block">Prenota il tuo ticket</h2>
+          <p id="sottotitolo_block">
+            Seleziona la tipologia di servizio ed inserisci i tuoi dati
+          </p>
+          <div id="ticket_block" style="display: none;">
+            <h2 id="ticket_code"></h2>
+            <h4 id="ticket_service_type"></h4>
+            <p id="ticket_customer_name"></p>
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5 text-center" id="annull_ticket_block" style="display: none;">
+    <button class="btn btn-danger" onclick="deleteTicket(this)">Annulla prenotazione</button>
+  </div>
+  </div>
+  <div class="py-5 text-center" id="serviceTypes_block">
+    <div class="row p-2">
+      <% services.forEach((service) => { %>
+      <div class="col-12 service_type" id="<%= service.id %>" onclick="selectServiceType(this.id)"><%= service.name %></div>
+      <% }) %>
+    </div>
+  </div>
+
+  <div class="py-10 text-center" id="form_block">
+    <div class="row p-2">
+      <div class="col-12 " id="form">
+        <label for="name" class="form-label">Come vuoi essere chiamato?</label>
+        <input type="text" class="form-control text-center" id="name" placeholder="" value="" required>
+      </div>
+    </div>
+
+    <div class="row p-2 mt-10" id="button_block">
+      <div class="col-12">
+        <button onclick="sendData()" class="w-100 btn btn-danger" type="submit">Prenota</button>
+      </div>
+    </div>
+  </div>
+  </main>
+
+  <script>
+    let globalObj = {};
+    document.addEventListener("DOMContentLoaded", () => {
+      window.scrollTo(0, 0);
+
+      let token;
+      if (localStorage.getItem("token"))
+        token = localStorage.getItem("token")
+      else
+        token = createToken();
+
+
+      localStorage.setItem("token", token);
+
+      if (localStorage.getItem("ticket_code")) {
+        showBookingDetails(localStorage.getItem("ticket_customer_name"), localStorage.getItem("ticket_service_type"), localStorage.getItem("ticket_code"));
+      }
+
+      socket.emit("create_token", token);
+    });
+
+    const createToken = () => {
+      const token = Date.now() + '-' + Math.random().toString(36).substring(2, 15).toUpperCase() + '-' + Math.random().toString(36).substring(2, 15).toUpperCase();
+      localStorage.setItem("token", token);
+      return token;
+    };
+
+    const socket = io();
+
+    const selectServiceType = (serviceType) => {
+
+      // prendo tutti gli elementi con la classe service_type
+      const serviceTypes = document.querySelectorAll(".service_type");
+
+      // rimuovo la classe selected a tutti gli elementi
+      serviceTypes.forEach((serviceType) => {
+        serviceType.classList.remove("service_type_selected");
+      });
+
+      // aggiungo la classe selected all'elemento cliccato
+      document.getElementById(serviceType).classList.add("service_type_selected");
+
+      // scroll verso il form
+      document.getElementById("form").scrollIntoView({
+        behavior: "smooth"
+      });
+    };
+
+    const sendData = () => {
+
+      const serviceType = document.querySelector(".service_type_selected");
+
+      if (!serviceType) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Attenzione!',
+          text: 'Seleziona il tipo di servizio!',
+          showConfirmButton: false,
+        });
+        return;
+      }
+      const serviceTypeId = serviceType.id;
+      const name = document.getElementById("name").value;
+
+      if (!name || name.length === 0 || name.trim().length === 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Attenzione!',
+          text: 'Inserisci il nome con cui vuoi essere chiamato al monitor!',
+          showConfirmButton: false,
+        });
+        return;
+      }
+
+      const data = {
+        serviceTypeId,
+        name,
+        token: localStorage.getItem("token"),
+      };
+
+      socket.emit("reservation", JSON.stringify(data));
+    };
+
+    socket.on("reservation", (objResponse) => {
+      const parsedData = JSON.parse(objResponse);
+
+      if (parsedData.token !== localStorage.getItem("token"))
+        return;
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Prenotazione effettuata!',
+        showConfirmButton: false,
+        timer: 1500
+      });
+
+      setTimeout(() => {
+        showBookingDetails(parsedData.customer_name, parsedData.service_name, parsedData.code);
+      }, 1500);
+
+      // delete uuid from local storage
+      localStorage.removeItem("token");
+    });
+
+    socket.on("my_ticket", (ticket_code, deskName) => {
+
+      if (localStorage.getItem("ticket_code") !== ticket_code)
+        return;
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Il tuo ticket è stato chiamato!',
+        html: `<strong style="font-size: 2em;">${deskName}</strong>`,
+        showConfirmButton: true,
+        clickOutside: false,
+        allowOutsideClick: false,
+        confirmButtonText: 'OK',
+
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
+
+      // delete local storage
+      localStorage.removeItem("ticket_code");
+      localStorage.removeItem("ticket_service_type");
+      localStorage.removeItem("ticket_customer_name");
+      localStorage.removeItem("token");
+    });
+
+    const deleteTicket = (button) => {
+      // add spinner to button
+      button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Caricamento...'
+      const ticket_code = localStorage.getItem("ticket_code");
+      socket.emit("delete_ticket", ticket_code);
+
+      // delete all local storage
+      localStorage.removeItem("ticket_code");
+      localStorage.removeItem("ticket_service_type");
+      localStorage.removeItem("ticket_customer_name");
+      localStorage.removeItem("token");
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+
+
+
+    };
+
+    const showBookingDetails = (customer_name, service_name, code) => {
+
+      localStorage.setItem("ticket_code", code);
+      localStorage.setItem("ticket_service_type", service_name);
+      localStorage.setItem("ticket_customer_name", customer_name);
+
+      document.getElementById("princ_container").style.marginTop = "100px";
+      document.getElementById("serviceTypes_block").style.display = "none";
+      document.getElementById("form_block").style.display = "none";
+      document.getElementById("sottotitolo_block").style.display = "none";
+      document.getElementById("titolo_block").innerText = "Ecco il tuo ticket";
+      document.getElementById("button_block").style.display = "none";
+
+      document.getElementById("ticket_block").style.display = "block";
+      document.getElementById("ticket_code").innerHTML = `<br><h1 style="font-size: 2em">${code}</h1><br>`;
+      document.getElementById("ticket_service_type").innerText = service_name;
+      document.getElementById("ticket_customer_name").innerText = customer_name;
+
+      document.getElementById("annull_ticket_block").style.display = "block";
+
+      window.scrollTo(0, 0);
+    };
+  </script>
+  <%- include('./partials/footer') %>
