@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require("express-session");
 const app = express();
 const dotenv = require("dotenv");
 dotenv.config({
@@ -16,6 +17,23 @@ app.use(cookieParser());
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(cors());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "secret-key",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: process.env.NODE_ENV === "production", // secure true solo in produzione
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // sameSite none solo in produzione
+    },
+  })
+);
+
+app.get("/test", (req, res) => {
+  res.json({
+    message: "Hello World",
+  });
+});
 
 // setup middleware
 const authMiddleware = require("./middlewares/authMiddleware");

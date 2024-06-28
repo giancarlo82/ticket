@@ -4,7 +4,6 @@ const utils = require("../utils");
 const authRouter = express.Router();
 
 authRouter.get("/login", (req, res) => {
-    
   // check if "data/daily/" exists
   utils.checkDailyFolderThanCreate();
 
@@ -53,6 +52,11 @@ authRouter.post("/auth/login", async (req, res) => {
         secure: true,
       }
     );
+
+    // salvo i dati dell'utente in sessione
+    req.session.user_name = user.name;
+    req.session.user_email = user.email;
+    req.session.user_id = user.id;
 
     res.redirect("/admin");
   } catch (error) {

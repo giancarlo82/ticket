@@ -23,10 +23,14 @@ adminRouter.get("/", async (req, res) => {
   // // ordino per servizio
   // pendingBookings.sort((a, b) => a.service_id - b.service_id);
 
-  return res.render("admin", {
+  // recupero i dati salvati in sessione
+  const user_name = req.session.user_name;
+
+  return res.render("desk", {
     services: services.services,
     bookings: pendingBookings,
     desks: desks.desks,
+    user_name: user_name || "Ospite",
   });
 });
 

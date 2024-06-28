@@ -169,6 +169,10 @@
         }
       });
 
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+
       // delete local storage
       localStorage.removeItem("ticket_code");
       localStorage.removeItem("ticket_service_type");
