@@ -3,6 +3,15 @@ const utils = require("../utils");
 
 const authRouter = express.Router();
 
+authRouter.get("/", (req, res) => {
+  // check if user is logged in
+  if (req.session.user_id) {
+    return res.redirect("/admin/desk_all");
+  }
+
+  return res.redirect("/login");
+});
+
 authRouter.get("/login", (req, res) => {
   // check if "data/daily/" exists
   utils.checkDailyFolderThanCreate();
