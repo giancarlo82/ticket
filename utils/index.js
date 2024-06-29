@@ -153,10 +153,11 @@ const deleteTicket = async (ticket_code) => {
   );
 
   // aggiorna lo status del booking in cancellato
-  booking.status = "cancellato";
-
-  // Scrivi i dati aggiornati nel file JSON
-  await writeJsonDataFile("bookings", bookings, "daily");
+  if (booking) {
+    booking.status = "cancellato";
+    // Scrivi i dati aggiornati nel file JSON
+    await writeJsonDataFile("bookings", bookings, "daily");
+  }
 };
 
 const checkDailyFolderThanCreate = async () => {

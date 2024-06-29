@@ -1,0 +1,121 @@
+<%- include('./partials/head') %> <%- include('./partials/navbar', { desks:
+desks, user_name: user_name }) %>
+
+<div class="row">
+  <div class="col-12" id="booking_container"></div>
+</div>
+
+<script>
+  let objGlobal = {
+    bookings: [],
+  };
+
+  const socket = io();
+
+  document.addEventListener("DOMContentLoaded", () => {
+    window.scrollTo(0, 0);
+    getBookings();
+
+    // set desk in local storage
+    const deskSelect = document.querySelector("select");
+    if (!localStorage.getItem("desk")) localStorage.setItem("desk", 1);
+    deskSelect.addEventListener("change", (e) => {
+      localStorage.setItem("desk", e.target.value);
+    });
+
+    var selectedDeskId = localStorage.getItem("desk");
+
+    if (selectedDeskId) {
+      var selectElement = document.getElementById("desk-select");
+      selectElement.value = selectedDeskId;
+    }
+  });
+
+  const getBookings = () => {
+    let bookingContainer = document.getElementById("booking_container");
+
+    fetch("/ticket/list")
+      .then((response) => response.json())
+      .then((data) => {
+        objGlobal.bookings = data;
+        getLastTicket();
+        if (data.length === 0) {
+          bookingContainer.innerHTML = "Nessun ticket disponibile";
+          return;
+        }
+        renderBookings(data);
+      });
+  };
+
+  const getLastTicket = () => {
+    fetch("/ticket/last")
+      .then((response) => response.json())
+      .then((data) => {
+        objGlobal.lastTicket = data;
+        console.log(data);
+      });
+  };
+
+  const renderBookings = (bookings) => {
+    let bookingContainer = document.getElementById("booking_container");
+    bookingContainer.innerHTML = "";
+
+    // creo un button con un solo booking, il primo della lista
+
+    let booking = bookings[0];
+
+    console.log(booking);
+
+    let button = document.createElement("button");
+    button.classList.add("booking_button");
+    button.innerHTML =
+      booking.code +
+      " - " +
+      booking.service_name +
+      "<br>" +
+      booking.customer_name;
+
+    button.style.backgroundColor = booking.service_color;
+    button.onclick = () => {
+      // Loader per il bottone
+      button.textContent = "Attendi...";
+      callTicket(booking.service_id);
+    };
+    bookingContainer.appendChild(button);
+  };
+
+  const callTicket = async (serviceId) => {
+    let deskId = localStorage.getItem("desk");
+    let bookings = objGlobal.bookings.filter(
+      (booking) => booking.service_id === serviceId
+    );
+
+    if (bookings.length === 0) {
+      alert("Non ci sono ticket disponibili per questo servizio");
+      return;
+    }
+    // recupera il ticket più vecchio, ovvero il primo della lista
+    let ticket_code = bookings[0].code;
+    socket.emit("call_ticket", ticket_code, deskId);
+
+    setTimeout(() => {
+      getBookings();
+    }, 500);
+  };
+
+  socket.on("new_ticket", (ticket_code) => {
+    getBookings();
+  });
+
+  socket.on("delete_ticket", (ticket_code) => {
+    getBookings();
+  });
+
+  socket.on("my_ticket", (ticket_code) => {
+    setTimeout(() => {
+      getBookings();
+    }, 1000);
+  });
+</script>
+
+<%- include('./partials/footer') %>

@@ -3,14 +3,30 @@
     {
       "id": 1,
       "name": "Giancarlo Uzzo",
-      "email": "mio@mio.it",
-      "password": "111"
+      "email": "giancarlo.uzzo@rstore.it",
+      "password": "Test1234!",
+      "role": "admin"
     },
     {
       "id": 2,
-      "name": "Jane Doe",
-      "email": "tuo@tuo.it",
-      "password": "222"
+      "name": "Vincenzo Guagenti",
+      "email": "vincenzo.guagenti@rstore.it",
+      "password": "Test1234!",
+      "role": "admin"
+    },
+    {
+      "id": 3,
+      "name": "Raimondo Meli",
+      "email": "raimondo.meli@rstore.it",
+      "password": "Test1234!",
+      "role": "user"
+    },
+    {
+      "id": 4,
+      "name": "Veronica Minaudo",
+      "email": "veronica.minaudo@rstore.it",
+      "password": "Test1234!",
+      "role": "user"
     }
   ]
 }

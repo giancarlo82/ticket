@@ -4,25 +4,25 @@
       "id": 1,
       "name": "Conto Corrente",
       "code": "CC",
-      "color": "#FF0000"
+      "color": "#538392"
     },
     {
       "id": 2,
       "name": "Spedizione Pacchi",
       "code": "SP",
-      "color": "#00FF00"
+      "color": "#6295A2"
     },
     {
       "id": 3,
       "name": "Raccomandata",
       "code": "RC",
-      "color": "#8ff9f6"
+      "color": "#80B9AD"
     },
     {
       "id": 4,
       "name": "Bollettini Postali",
       "code": "BP",
-      "color": "#FFFF00"
+      "color": "#B3E2A7"
     }
   ]
 }

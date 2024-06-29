@@ -58,7 +58,7 @@ authRouter.post("/auth/login", async (req, res) => {
     req.session.user_email = user.email;
     req.session.user_id = user.id;
 
-    res.redirect("/admin");
+    res.redirect("/admin/desk_all");
   } catch (error) {
     console.log(error);
   }

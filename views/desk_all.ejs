@@ -1,78 +1,7 @@
-<%- include('./partials/head') %>
+<%- include('./partials/head') %> <%- include('./partials/navbar', { desks:
+desks, user_name: user_name }) %>
 
-<style>
-  .service-button {
-    width: 300px;
-    margin: 5px;
-    padding: 10px;
-    height: 300px;
-    font-size: 2.5rem;
-    border-radius: 5px;
-    background-color: #f8f9fa;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
-    position: relative; /* Aggiunto per il posizionamento del testo */
-  }
-
-  /* Hover effect solo se il bottone non è disabilitato */
-  .service-button:hover:not(.disabled) {
-    background-color: #e9ecef;
-  }
-
-  .service-button.red {
-    background-color: red;
-  }
-
-  .service-button.disabled {
-    cursor: not-allowed;
-    box-shadow: none;
-  }
-
-  .booking-info {
-    position: absolute; /* Posiziona il testo in basso al bottone */
-    bottom: 10px; /* Margine inferiore */
-    left: 50%; /* Centra orizzontalmente */
-    transform: translateX(-50%); /* Centra orizzontalmente */
-    font-size: 1.3rem; /* Dimensione del testo */
-    color: #959191; /* Colore del testo */
-  }
-</style>
-
-<div
-  class="row d-flex align-items-center"
-  id="desks-container"
-  style="margin: 5px 0"
->
-  <div class="col-3 text-center">
-    <label for="">Scegli il desk</label>
-    <select name="" class="form-select text-center" id="desk-select">
-      <% desks.forEach(desk => { %>
-      <option value="<%= desk.id %>"><%= desk.name %></option>
-      <% }) %>
-    </select>
-  </div>
-  <div class="col-9 text-end">
-    <div class="dropdown">
-      <button
-        class="btn btn btn-light dropdown-toggle"
-        type="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        <%= user_name %>
-      </button>
-      <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/admin/monitor">Monitor</a></li>
-        <li><a class="dropdown-item" href="/logout">Logout</a></li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<div class="mt-6" id="service-buttons-container">
-  <!-- Qui verranno aggiunti dinamicamente i bottoni dei servizi -->
-</div>
+<div class="mt-6" id="service-buttons-container"></div>
 
 <div class="row mt-6" id="bookings-container"></div>
 
@@ -123,6 +52,16 @@
       .then((data) => {
         objGlobal.bookings = data;
         renderServiceButtons();
+        getLastTicket();
+      });
+  };
+
+  const getLastTicket = () => {
+    fetch("/ticket/last")
+      .then((response) => response.json())
+      .then((data) => {
+        objGlobal.lastTicket = data;
+        console.log(data);
       });
   };
 
@@ -164,8 +103,10 @@
         bookingsInfo.textContent = `${serviceBookings.length} ticket in coda`;
       }
 
-      if(serviceBookings.length < 1) {
+      if (serviceBookings.length < 1) {
         bookingsInfo.textContent = `No ticket`;
+      } else {
+        bookingsInfo.style.color = "black";
       }
 
       serviceButton.appendChild(bookingsInfo); // Aggiungi il numero di bookings all'interno del bottone

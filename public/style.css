@@ -240,3 +240,63 @@ footer {
   font-size: 3em;
   text-align: center;
 }
+
+.booking_button {
+  margin: 0 auto; /* Center horizontally */
+  padding: 20px 40px; /* Increase padding for larger button */
+  font-size: 54px; /* Increase font size for better visibility */
+  border-radius: 10px; /* Increase border radius for rounded corners */
+  cursor: pointer;
+  display: block; /* Ensure the button takes up the full width of its container */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Add transition effects */
+}
+
+.booking_button:hover {
+  background-color: #0056b3; /* Change hover background color for better contrast */
+  transform: translateY(-2px); /* Slightly lift the button on hover */
+}
+
+#booking_container {
+  display: flex; /* Enable flexbox */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  height: 50vh; /* Take full viewport height */
+}
+
+.service-button {
+  width: 300px;
+  margin: 5px;
+  padding: 10px;
+  height: 300px;
+  font-size: 2.5rem;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  position: relative; /* Aggiunto per il posizionamento del testo */
+}
+
+/* Hover effect solo se il bottone non è disabilitato */
+.service-button:hover:not(.disabled) {
+  background-color: #e9ecef;
+}
+
+.service-button.red {
+  background-color: red;
+}
+
+.service-button.disabled {
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.booking-info {
+  position: absolute; /* Posiziona il testo in basso al bottone */
+  bottom: 10px; /* Margine inferiore */
+  left: 50%; /* Centra orizzontalmente */
+  transform: translateX(-50%); /* Centra orizzontalmente */
+  font-size: 1.3rem; /* Dimensione del testo */
+  color: #959191; /* Colore del testo */
+}

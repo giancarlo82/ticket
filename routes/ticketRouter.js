@@ -5,7 +5,6 @@ const utils = require("../utils");
 // ***** app use /ticket prefix ***** //
 
 ticketRouter.get("/", async (req, res) => {
-  
   // check if "data/daily/" exists
   utils.checkDailyFolderThanCreate();
 
@@ -41,7 +40,9 @@ ticketRouter.get("/services", async (req, res) => {
 
 ticketRouter.get("/last", async (req, res) => {
   const ticket_called = await utils.readJsonDataFile("ticket_called", "daily");
-  return res.json(ticket_called.ticket_called);
+  // recupero la lista dei tickets, ne prendo 5 e li ordino al contrario
+  const lastTickets = ticket_called.ticket_called.slice(-5).reverse();
+  return res.json(lastTickets);
 });
 
 module.exports = ticketRouter;

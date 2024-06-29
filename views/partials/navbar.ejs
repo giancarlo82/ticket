@@ -1,0 +1,36 @@
+<div
+  class="row d-flex align-items-center"
+  id="desks-container"
+  style="border-bottom: 1px solid #ccc"
+>
+  <div class="col-3 text-center mb-3">
+    <label for="">Scegli il desk</label>
+    <select name="" class="form-select text-center" id="desk-select">
+      <% desks.forEach(desk => { %>
+      <option value="<%= desk.id %>"><%= desk.name %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="col-9 text-end">
+    <div class="dropdown">
+      <button
+        class="btn btn btn-light dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <%= user_name %>
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="dropdown-item" href="/admin/desk_all">Desk dettaglio</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="/admin/desk_single">Desk generale</a>
+        </li>
+        <li><a class="dropdown-item" href="/admin/monitor">Monitor</a></li>
+        <li><a class="dropdown-item" href="/logout">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
