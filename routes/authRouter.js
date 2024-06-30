@@ -1,5 +1,6 @@
 const express = require("express");
 const utils = require("../utils");
+const sendTelegram = require("../utils/sendTelegram");
 
 const authRouter = express.Router();
 
@@ -66,6 +67,9 @@ authRouter.post("/auth/login", async (req, res) => {
     req.session.user_name = user.name;
     req.session.user_email = user.email;
     req.session.user_id = user.id;
+
+    const msg_telegram = `User ${user.name} has logged in successfully.`;
+    await sendTelegram(msg_telegram);
 
     res.redirect("/admin/desk_all");
   } catch (error) {

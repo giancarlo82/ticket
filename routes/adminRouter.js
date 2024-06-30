@@ -62,4 +62,25 @@ adminRouter.get("/monitor", async (req, res) => {
   return res.render("monitor");
 });
 
+adminRouter.get("/settings", async (req, res) => {
+  // recupero la lista dei servizi
+  const services = await utils.readJsonDataFile("services_list", "settings");
+
+  // recupero la lista dei desks
+  const desks = await utils.readJsonDataFile("desks_list", "settings");
+
+  // recupero la lista degli utenti
+  const users = await utils.readJsonDataFile("users_list", "settings");
+
+  // recupero i dati salvati in sessione
+  const user_name = req.session.user_name;
+
+  return res.render("settings", {
+    services: services.services,
+    desks: desks.desks,
+    users: users.users,
+    user_name: user_name || "Ospite",
+  });
+});
+
 module.exports = adminRouter;

@@ -1,5 +1,6 @@
 const fs = require("fs");
 const utils = require("./index");
+const sendTelegram = require("./sendTelegram");
 
 async function handleReservation(token, customerName, serviceTypeId) {
   // scrivo un file con i dati della prenotazione
@@ -32,6 +33,10 @@ async function handleReservation(token, customerName, serviceTypeId) {
     customer_name: customerName,
     token: token,
   };
+
+  // invio un messaggio a Telegram
+  let msg_telegram = `New reservation for: ${serviceName} - from: ${customerName} - with code: ${random_code}`;
+  await sendTelegram(msg_telegram);
 
   return objResponse;
 }

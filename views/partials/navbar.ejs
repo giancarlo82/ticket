@@ -3,6 +3,7 @@
   id="desks-container"
   style="border-bottom: 1px solid #ccc"
 >
+  <% if (page && page !== 'settings') { %>
   <div class="col-3 text-center mb-3">
     <label for="">Scegli il desk</label>
     <select name="" class="form-select text-center" id="desk-select">
@@ -11,6 +12,13 @@
       <% }) %>
     </select>
   </div>
+  <% } else { %>
+
+  <div class="col-3 text-center mb-3">
+    <p>&nbsp;</p>
+  </div>
+
+  <% } %>
   <div class="col-9 text-end">
     <div class="dropdown">
       <button
@@ -29,6 +37,7 @@
           <a class="dropdown-item" href="/admin/desk_single">Desk generale</a>
         </li>
         <li><a class="dropdown-item" href="/admin/monitor">Monitor</a></li>
+        <li><a class="dropdown-item" href="/admin/settings">Settings</a></li>
         <li><a class="dropdown-item" href="/logout">Logout</a></li>
       </ul>
     </div>

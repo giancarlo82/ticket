@@ -1,6 +1,7 @@
 const fs = require("fs");
 const utils = require("./index");
 const path = require("path");
+const sendTelegram = require("./sendTelegram");
 
 async function callTicket(ticket_code, deskId, deskName) {
   const bookings = await utils.readJsonDataFile("bookings", "daily");
@@ -23,6 +24,10 @@ async function callTicket(ticket_code, deskId, deskName) {
     service = service.services.find(
       (service) => service.id === booking.service_id
     );
+
+    // invio un messaggio a Telegram
+    let msg_telegram = `Ticket called: ${ticket_code} (${booking.customer_name} - ${service.name}) - da ${deskName}`;
+    await sendTelegram(msg_telegram);
 
     writeTicketCalled(
       ticket_code,

@@ -1,5 +1,5 @@
 <%- include('./partials/head') %> <%- include('./partials/navbar', { desks:
-desks, user_name: user_name }) %>
+desks, user_name: user_name, page: 'desk_all' }) %>
 
 <div class="mt-6" id="service-buttons-container"></div>
 
@@ -23,7 +23,9 @@ desks, user_name: user_name }) %>
 
     // set desk in local storage
     const deskSelect = document.querySelector("select");
-    if (!localStorage.getItem("desk")) localStorage.setItem("desk", 1);
+    if (!localStorage.getItem("desk")){
+      localStorage.setItem("desk", deskSelect.value);
+    }
     deskSelect.addEventListener("change", (e) => {
       localStorage.setItem("desk", e.target.value);
     });
@@ -32,7 +34,11 @@ desks, user_name: user_name }) %>
 
     if (selectedDeskId) {
       var selectElement = document.getElementById("desk-select");
-      selectElement.value = selectedDeskId;
+      // se esiste una option con il valore salvato in local storage, selezionala
+      if (selectElement.querySelector(`option[value="${selectedDeskId}"]`))
+        selectElement.value = selectedDeskId;
+      // altrimenti seleziona la prima option
+      else selectElement.value = selectElement.options[0].value;
     }
   });
 
