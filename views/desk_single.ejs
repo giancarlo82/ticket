@@ -4,6 +4,7 @@ desks, user_name: user_name }) %>
 <div class="row">
   <div class="col-12" id="booking_container"></div>
 </div>
+<div class="row px-4" style="margin-top: 50px" id="lastTicket-container"></div>
 
 <script>
   let objGlobal = {
@@ -49,10 +50,13 @@ desks, user_name: user_name }) %>
 
   const getLastTicket = () => {
     fetch("/ticket/last")
-      .then((response) => response.json())
-      .then((data) => {
-        objGlobal.lastTicket = data;
-        console.log(data);
+      .then((response) => response.text())
+      .then((html) => {
+        let lastTicketContainer = document.getElementById(
+          "lastTicket-container"
+        );
+        lastTicketContainer.innerHTML = "";
+        lastTicketContainer.innerHTML = html;
       });
   };
 
@@ -63,8 +67,6 @@ desks, user_name: user_name }) %>
     // creo un button con un solo booking, il primo della lista
 
     let booking = bookings[0];
-
-    console.log(booking);
 
     let button = document.createElement("button");
     button.classList.add("booking_button");

@@ -38,11 +38,26 @@ ticketRouter.get("/services", async (req, res) => {
   return res.json(services.services);
 });
 
+// ticketRouter.get("/last", async (req, res) => {
+//   const ticket_called = await utils.readJsonDataFile("ticket_called", "daily");
+//   // recupero la lista dei tickets, ne prendo 5 e li ordino al contrario
+//   const lastTickets = ticket_called.ticket_called.slice(-5).reverse();
+//   return res.json(lastTickets);
+// });
+
 ticketRouter.get("/last", async (req, res) => {
   const ticket_called = await utils.readJsonDataFile("ticket_called", "daily");
-  // recupero la lista dei tickets, ne prendo 5 e li ordino al contrario
-  const lastTickets = ticket_called.ticket_called.slice(-5).reverse();
-  return res.json(lastTickets);
+  const lastTickets = ticket_called.ticket_called.slice(-4).reverse();
+
+  // Aggiungi la funzione formatTime senza moment
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
+  return res.render("lastTickets", { lastTickets, formatTime });
 });
 
 module.exports = ticketRouter;
