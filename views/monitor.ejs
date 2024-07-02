@@ -34,14 +34,18 @@
 <script>
   let audioAllowed = false;
 
-  document.addEventListener("click", () => {
+  let button = document.getElementById("fullscreen-button");
+
+  button.addEventListener("click", () => {
     if (!audioAllowed) {
       audioAllowed = true;
     }
+
+    getLastTicketCalled();
   });
 
   const getLastTicketCalled = () => {
-    fetch("/ticket/last")
+    fetch("/ticket/json_last")
       .then((response) => response.json())
       .then((data) => {
         data.sort((a, b) => new Date(b.called_at) - new Date(a.called_at));
@@ -110,8 +114,6 @@
   };
 
   document.addEventListener("DOMContentLoaded", () => {
-    getLastTicketCalled();
-
     document.querySelector(".day_container").innerText =
       new Date().toLocaleDateString("it-IT", {
         weekday: "long",
