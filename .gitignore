@@ -3,6 +3,7 @@
 
 # Ignora i file di log
 /database/daily/*/*.json
+/database/settings/*.json
 
 # Ignora i file di configurazione locali
 config/.env
