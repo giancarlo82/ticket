@@ -4,13 +4,13 @@
       "id": 1,
       "name": "Cassa 1",
       "code": "C1",
-      "color": "#FF0000"
+      "color": "#3714FF"
     },
     {
       "id": 2,
       "name": "Cassa 2",
       "code": "C2",
-      "color": "#00FF00"
+      "color": "#E2FF0A"
     }
   ]
 }

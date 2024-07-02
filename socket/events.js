@@ -1,6 +1,9 @@
 // socketEvents.js
 const handleReservation = require("../utils/handleReservation");
 const callTicket = require("../utils/callTicket");
+const updateService = require("../utils/updateService");
+const updateDesk = require("../utils/updateDesk");
+const updateUser = require("../utils/updateUser");
 const utils = require("../utils");
 
 module.exports = function (io) {
@@ -34,6 +37,45 @@ module.exports = function (io) {
     socket.on("delete_ticket", async (ticket_code) => {
       await utils.deleteTicket(ticket_code);
       io.emit("delete_ticket");
+    });
+
+    // setting update service
+    socket.on("update-service", async (data) => {
+      let serviceTypeId = data.id;
+      let serviceName = data.service_name;
+      let serviceCode = data.service_code;
+      let serviceColor = data.service_color;
+
+      await updateService(
+        serviceTypeId,
+        serviceName,
+        serviceCode,
+        serviceColor
+      );
+      io.emit("update_data");
+    });
+
+    // setting update desk
+    socket.on("update-desk", async (data) => {
+      console.log(data);
+      let deskId = data.id;
+      let deskName = data.desk_name;
+      let deskCode = data.desk_code;
+      let deskColor = data.desk_color;
+
+      await updateDesk(deskId, deskName, deskCode, deskColor);
+      io.emit("update_data");
+    });
+
+    // setting update user
+    socket.on("update-user", async (data) => {
+      let userId = data.id;
+      let userName = data.user_name;
+      let userEmail = data.user_email;
+      let userPassword = data.user_password;
+
+      await updateUser(userId, userName, userEmail, userPassword);
+      io.emit("update_data");
     });
 
     socket.on("disconnect", () => {});

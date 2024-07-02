@@ -12,6 +12,11 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
     display: flex;
     align-items: center;
   }
+
+  .custom-primary {
+    background-color: #36b38d;
+    color: white;
+  }
 </style>
 
 <div class="container">
@@ -27,22 +32,23 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
         <div class="col-12">
           <div class="row p-2 custom_row">
             <div class="col-4 mt-1">
-                <input class="form-control" type="text" value="<%= service.name %>">
+                <input id="service_name__<%= service.id %>" class="form-control" type="text" value="<%= service.name %>">
             </div>
             <div class="col-2">
               <input
                 type="text"
                 class="form-control"
+                id="service_code__<%= service.id %>"
                 value="<%= service.code  %>"
               />
             </div>
             <div class="col-3">
-                <input class="jscolor form-control" id="" value="<%= service.color  %>">
+                <input id="service_color__<%= service.id %>" class="jscolor form-control" id="" value="<%= service.color  %>">
             </div>
 
             <div class="col-2 offset-1">
-              <button class="btn btn-primary">Salva</button>
-              <button class="btn btn-danger">Elimina</button>
+              <button id="service_salva__<%= service.id %>" class="btn custom-primary" onclick="salvaDato('service', '<%= service.id %>')">Salva</button>
+              <button id="service_elimina__<%= service.id %>" class="btn btn-secondary"onclick="eliminaDato('service', '<%= service.id %>')">Elimina</button>
             </div>
           </div>
         </div>
@@ -59,23 +65,24 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
         <div class="col-12">
           <div class="row p-2 custom_row">
             <div class="col-4 mt-1">
-                <input class="form-control" type="text" value="<%= desk.name %>">
+                <input id="desk_name__<%= desk.id %>" class="form-control" type="text" value="<%= desk.name %>">
             </div>
             <div class="col-2">
               <input
                 type="text"
+                id="desk_code__<%= desk.id %>"
                 class="form-control"
                 value="<%= desk.code  %>"
               />
             </div>
             <div class="col-3">
-              <input class="jscolor form-control" id="" value="<%= desk.color  %>">
+              <input id="desk_color__<%= desk.id %>" class="jscolor form-control" id="" value="<%= desk.color  %>">
             </div>
 
 
             <div class="col-2 offset-1">
-              <button class="btn btn-primary">Salva</button>
-              <button class="btn btn-danger">Elimina</button>
+              <button id="desk_salva__<%= desk.id %>" class="btn custom-primary" onclick="salvaDato('desk', '<%= desk.id %>')">Salva</button>
+              <button id="desk_elimina__<%= desk.id %>" class="btn btn-secondary" onclick="eliminaDato('desk', '<%= desk.id %>')">Elimina</button>
             </div>
           </div>
         </div>
@@ -91,12 +98,13 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
         <div class="col-12">
           <div class="row p-2 custom_row">
             <div class="col-4 mt-1">
-                <input class="form-control" type="text" value="<%= user.name %>">
+                <input id="user_name__<%= user.id %>" class="form-control" type="text" value="<%= user.name %>">
             </div>
             <div class="col-3">
               <input
                 type="text"
                 class="form-control"
+                id="user_email__<%= user.id %>"
                 value="<%= user.email  %>"
               />
             </div>
@@ -105,14 +113,15 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
               <input
                 type="text"
                 class="form-control"
+                id="user_password__<%= user.id %>"
                 placeholder="Nuova password"
               />
             </div>
             
 
             <div class="col-2 offset-1">
-              <button class="btn btn-primary">Salva</button>
-              <button class="btn btn-danger">Elimina</button>
+              <button id="user_salva__<%= user.id %>" class="btn custom-primary" onclick="salvaDato('user', '<%= user.id %>')">Salva</button>
+              <button id="user_elimina__<%= user.id %>" class="btn btn-secondary" onclick="eliminaDato('user', '<%= user.id %>')">Elimina</button>
             </div>
           </div>
         </div>
@@ -123,5 +132,61 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
     </div>
   </div>
 </div>
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // disabilito tutti i button "elimina"
+    document.querySelectorAll('button[id^="service_elimina__"]').forEach((button) => {
+      button.disabled = true;
+    });
+
+    document.querySelectorAll('button[id^="desk_elimina__"]').forEach((button) => {
+      button.disabled = true;
+    });
+
+    document.querySelectorAll('button[id^="user_elimina__"]').forEach((button) => {
+      button.disabled = true;
+    });
+    
+  });
+
+  const socket = io();
+
+  const salvaDato = (tipo, id) => {
+    switch(tipo){
+      case 'service':
+        const service_name = document.getElementById(`service_name__${id}`).value;
+        const service_code = document.getElementById(`service_code__${id}`).value;
+        const service_color = document.getElementById(`service_color__${id}`).value;
+        socket.emit('update-service', {id, service_name, service_code, service_color})
+        break;
+      case 'desk':
+        const desk_name = document.getElementById(`desk_name__${id}`).value;
+        const desk_code = document.getElementById(`desk_code__${id}`).value;
+        const desk_color = document.getElementById(`desk_color__${id}`).value;
+        socket.emit('update-desk', {id, desk_name, desk_code, desk_color})
+        break;
+      case 'user':
+        const user_name = document.getElementById(`user_name__${id}`).value;
+        const user_email = document.getElementById(`user_email__${id}`).value;
+        const user_password = document.getElementById(`user_password__${id}`).value;
+        socket.emit('update-user', {id, user_name, user_email, user_password})
+        break;
+      default:
+          break;
+    }
+
+
+  }
+
+  const eliminaDato = (tipo, id) => {
+    console.log('elimina: ', tipo, id);
+  }
+
+  socket.on('update_data', (data) => {
+    window.location.reload();
+  })
+</script>
 
 <%- include('./partials/footer') %>
