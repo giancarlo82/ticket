@@ -27,33 +27,20 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
         <div class="col-12">
           <div class="row p-2 custom_row">
             <div class="col-4 mt-1">
-              <h5><%= service.name %></h5>
+                <input class="form-control" type="text" value="<%= service.name %>">
             </div>
-            <div class="col-1">
+            <div class="col-2">
               <input
                 type="text"
                 class="form-control"
                 value="<%= service.code  %>"
               />
             </div>
+            <div class="col-3">
+                <input class="jscolor form-control" id="" value="<%= service.color  %>">
+            </div>
+
             <div class="col-2 offset-1">
-              <input
-                type="text"
-                class="form-control"
-                value="<%= service.color  %>"
-              />
-            </div>
-
-            <div class="col-2">
-              <div
-                class="color_div"
-                style="background-color: <%= service.color %>"
-              >
-                &nbsp;
-              </div>
-            </div>
-
-            <div class="col-2">
               <button class="btn btn-primary">Salva</button>
               <button class="btn btn-danger">Elimina</button>
             </div>
@@ -63,7 +50,7 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
       </div>
 
 
-
+    <br> <br>
       <div class="row mb-4">
         <div class="col-12">
           <h4 style="text-decoration: underline; font-weight: 900;">Sportelli</h4>
@@ -72,33 +59,21 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
         <div class="col-12">
           <div class="row p-2 custom_row">
             <div class="col-4 mt-1">
-              <h5><%= desk.name %></h5>
+                <input class="form-control" type="text" value="<%= desk.name %>">
             </div>
-            <div class="col-1">
+            <div class="col-2">
               <input
                 type="text"
                 class="form-control"
                 value="<%= desk.code  %>"
               />
             </div>
+            <div class="col-3">
+              <input class="jscolor form-control" id="" value="<%= desk.color  %>">
+            </div>
+
+
             <div class="col-2 offset-1">
-              <input
-                type="text"
-                class="form-control"
-                value="<%= desk.color  %>"
-              />
-            </div>
-
-            <div class="col-2">
-              <div
-                class="color_div"
-                style="background-color: <%= desk.color %>"
-              >
-                &nbsp;
-              </div>
-            </div>
-
-            <div class="col-2">
               <button class="btn btn-primary">Salva</button>
               <button class="btn btn-danger">Elimina</button>
             </div>
@@ -107,8 +82,7 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
         <% }); %>
       </div>
 
-
-
+      <br> <br>
       <div class="row mb-4">
         <div class="col-12">
           <h4 style="text-decoration: underline; font-weight: 900;">Utenti</h4>
@@ -117,18 +91,26 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
         <div class="col-12">
           <div class="row p-2 custom_row">
             <div class="col-4 mt-1">
-              <h5><%= user.name %></h5>
+                <input class="form-control" type="text" value="<%= user.name %>">
             </div>
-            <div class="col-4 ">
+            <div class="col-3">
               <input
                 type="text"
                 class="form-control"
                 value="<%= user.email  %>"
               />
             </div>
+
+            <div class="col-2">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Nuova password"
+              />
+            </div>
             
 
-            <div class="col-2 offset-2">
+            <div class="col-2 offset-1">
               <button class="btn btn-primary">Salva</button>
               <button class="btn btn-danger">Elimina</button>
             </div>
