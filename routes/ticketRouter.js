@@ -11,8 +11,12 @@ ticketRouter.get("/", async (req, res) => {
   // recupero la lista dei servizi
   const services = await utils.readJsonDataFile("services_list", "settings");
 
+  // recupero le impostazioni dell'app
+  const settings = await utils.readJsonDataFile("app_list", "settings");
+
   return res.render("ticket", {
     services: services.services,
+    settings: settings.app,
   });
 });
 

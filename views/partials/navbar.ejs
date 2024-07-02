@@ -1,7 +1,12 @@
 <div
   class="row d-flex align-items-center"
   id="desks-container"
-  style="border-bottom: 1px solid #ccc"
+  style="
+    border-bottom: 1px solid #ccc;
+    background-color: <%= settings[0].backgroundColor %>;
+    color: <%= settings[0].color %>;
+    margin-top: -10px;
+  "
 >
   <% if (page && page !== 'settings') { %>
   <div class="col-3 text-center mb-3">

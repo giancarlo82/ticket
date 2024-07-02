@@ -13,12 +13,16 @@ authRouter.get("/", (req, res) => {
   return res.redirect("/login");
 });
 
-authRouter.get("/login", (req, res) => {
+authRouter.get("/login", async (req, res) => {
   // check if "data/daily/" exists
   utils.checkDailyFolderThanCreate();
 
+   // recupero le impostazioni dell'app
+  const settings = await utils.readJsonDataFile("app_list", "settings");
+
   res.render("auth/login", {
     message: "",
+    settings: settings.app,
   });
 });
 

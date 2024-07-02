@@ -23,11 +23,15 @@ adminRouter.get("/desk_single", async (req, res) => {
   // recupero i dati salvati in sessione
   const user_name = req.session.user_name;
 
+  // recupero le impostazioni dell'app
+  const settings = await utils.readJsonDataFile("app_list", "settings");
+
   return res.render("desk_single", {
     services: services.services,
     bookings: pendingBookings,
     desks: desks.desks,
     user_name: user_name || "Ospite",
+    settings: settings.app,
   });
 });
 
@@ -50,16 +54,25 @@ adminRouter.get("/desk_all", async (req, res) => {
   // recupero i dati salvati in sessione
   const user_name = req.session.user_name;
 
+  // recupero le impostazioni dell'app
+  const settings = await utils.readJsonDataFile("app_list", "settings");
+
   return res.render("desk_all", {
     services: services.services,
     bookings: pendingBookings,
     desks: desks.desks,
     user_name: user_name || "Ospite",
+    settings: settings.app,
   });
 });
 
 adminRouter.get("/monitor", async (req, res) => {
-  return res.render("monitor");
+  // recupero le impostazioni dell'app
+  const settings = await utils.readJsonDataFile("app_list", "settings");
+
+  return res.render("monitor", {
+    settings: settings,
+  });
 });
 
 adminRouter.get("/settings", async (req, res) => {
@@ -75,11 +88,15 @@ adminRouter.get("/settings", async (req, res) => {
   // recupero i dati salvati in sessione
   const user_name = req.session.user_name;
 
+  // recupero le impostazioni dell'app
+  const settings = await utils.readJsonDataFile("app_list", "settings");
+
   return res.render("settings", {
     services: services.services,
     desks: desks.desks,
     users: users.users,
     user_name: user_name || "Ospite",
+    settings: settings.app,
   });
 });
 

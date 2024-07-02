@@ -1,5 +1,5 @@
 <%- include('./partials/head') %> <%- include('./partials/navbar', { desks:
-desks, user_name: user_name, page: 'desk_single' }) %>
+desks, user_name: user_name, page: 'desk_single', settings: settings }) %>
 
 <div class="row">
   <div class="col-12" id="booking_container"></div>
@@ -41,7 +41,7 @@ desks, user_name: user_name, page: 'desk_single' }) %>
         objGlobal.bookings = data;
         getLastTicket();
         if (data.length === 0) {
-          bookingContainer.innerHTML = "Nessun ticket disponibile";
+          bookingContainer.innerHTML = "<div class='no_ticket'>Nessun ticket disponibile</div>";
           return;
         }
         renderBookings(data);
@@ -120,4 +120,4 @@ desks, user_name: user_name, page: 'desk_single' }) %>
   });
 </script>
 
-<%- include('./partials/footer') %>
+<%- include('./partials/footer', {settings: settings}) %>

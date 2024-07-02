@@ -1,5 +1,5 @@
 <%- include('./partials/head') %> <%- include('./partials/navbar', { desks:
-desks, user_name: user_name, page: 'desk_all' }) %>
+desks, user_name: user_name, page: 'desk_all', settings: settings }) %>
 
 <div class="mt-6" id="service-buttons-container"></div>
 
@@ -23,7 +23,7 @@ desks, user_name: user_name, page: 'desk_all' }) %>
 
     // set desk in local storage
     const deskSelect = document.querySelector("select");
-    if (!localStorage.getItem("desk")){
+    if (!localStorage.getItem("desk")) {
       localStorage.setItem("desk", deskSelect.value);
     }
     deskSelect.addEventListener("change", (e) => {
@@ -193,4 +193,4 @@ desks, user_name: user_name, page: 'desk_all' }) %>
   });
 </script>
 
-<%- include('./partials/footer') %>
+<%- include('./partials/footer', {settings: settings}) %>

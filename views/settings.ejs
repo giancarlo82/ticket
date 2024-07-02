@@ -1,5 +1,5 @@
 <%- include('./partials/head') %> <%- include('./partials/navbar', {
-desks:desks, user_name: user_name, page: 'settings' }) %>
+desks:desks, user_name: user_name, page: 'settings', settings: settings }) %>
 
 <style>
   .color_div {
@@ -22,17 +22,30 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
 <div class="container">
   <div class="row">
     <div class="col-12 mt-2">
-      <h1>Impostazioni</h1>
-      <hr />
       <div class="row mb-4">
         <div class="col-12">
-          <h4 style="text-decoration: underline; font-weight: 900;">Servizi</h4>
+          <h4 style="text-decoration: underline; font-weight: 900">Servizi</h4>
         </div>
+
+        <div class="col-12 border-bottom" style="font-weight: 900">
+          <div class="row p-2 custom_row">
+            <div class="col-4 mt-1">Nome Servizio</div>
+            <div class="col-2">Codice Servizio</div>
+            <div class="col-3">Colore Servizio</div>
+            <div class="col-2 offset-1"></div>
+          </div>
+        </div>
+
         <% services.map((service) => { %>
         <div class="col-12">
           <div class="row p-2 custom_row">
             <div class="col-4 mt-1">
-                <input id="service_name__<%= service.id %>" class="form-control" type="text" value="<%= service.name %>">
+              <input
+                id="service_name__<%= service.id %>"
+                class="form-control"
+                type="text"
+                value="<%= service.name %>"
+              />
             </div>
             <div class="col-2">
               <input
@@ -43,29 +56,61 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
               />
             </div>
             <div class="col-3">
-                <input id="service_color__<%= service.id %>" class="jscolor form-control" id="" value="<%= service.color  %>">
+              <input
+                id="service_color__<%= service.id %>"
+                class="jscolor form-control"
+                id=""
+                value="<%= service.color  %>"
+              />
             </div>
 
             <div class="col-2 offset-1">
-              <button id="service_salva__<%= service.id %>" class="btn custom-primary" onclick="salvaDato('service', '<%= service.id %>')">Salva</button>
-              <button id="service_elimina__<%= service.id %>" class="btn btn-secondary"onclick="eliminaDato('service', '<%= service.id %>')">Elimina</button>
+              <button
+                id="service_salva__<%= service.id %>"
+                class="btn custom-primary"
+                onclick="salvaDato('service', '<%= service.id %>')"
+              >
+                Salva
+              </button>
+              <button
+                id="service_elimina__<%= service.id %>"
+                class="btn btn-secondary"
+                onclick="eliminaDato('service', '<%= service.id %>')"
+              >
+                Elimina
+              </button>
             </div>
           </div>
         </div>
         <% }); %>
       </div>
 
-
-    <br> <br>
+      <br />
+      <br />
       <div class="row mb-4">
         <div class="col-12">
-          <h4 style="text-decoration: underline; font-weight: 900;">Sportelli</h4>
+          <h4 style="text-decoration: underline; font-weight: 900">Desk</h4>
         </div>
+
+        <div class="col-12 border-bottom" style="font-weight: 900">
+          <div class="row p-2 custom_row">
+            <div class="col-4 mt-1">Nome Desk</div>
+            <div class="col-2">Codice Desk</div>
+            <div class="col-3">Colore Desk</div>
+            <div class="col-2 offset-1"></div>
+          </div>
+        </div>
+
         <% desks.map((desk) => { %>
         <div class="col-12">
           <div class="row p-2 custom_row">
             <div class="col-4 mt-1">
-                <input id="desk_name__<%= desk.id %>" class="form-control" type="text" value="<%= desk.name %>">
+              <input
+                id="desk_name__<%= desk.id %>"
+                class="form-control"
+                type="text"
+                value="<%= desk.name %>"
+              />
             </div>
             <div class="col-2">
               <input
@@ -76,29 +121,61 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
               />
             </div>
             <div class="col-3">
-              <input id="desk_color__<%= desk.id %>" class="jscolor form-control" id="" value="<%= desk.color  %>">
+              <input
+                id="desk_color__<%= desk.id %>"
+                class="jscolor form-control"
+                id=""
+                value="<%= desk.color  %>"
+              />
             </div>
 
-
             <div class="col-2 offset-1">
-              <button id="desk_salva__<%= desk.id %>" class="btn custom-primary" onclick="salvaDato('desk', '<%= desk.id %>')">Salva</button>
-              <button id="desk_elimina__<%= desk.id %>" class="btn btn-secondary" onclick="eliminaDato('desk', '<%= desk.id %>')">Elimina</button>
+              <button
+                id="desk_salva__<%= desk.id %>"
+                class="btn custom-primary"
+                onclick="salvaDato('desk', '<%= desk.id %>')"
+              >
+                Salva
+              </button>
+              <button
+                id="desk_elimina__<%= desk.id %>"
+                class="btn btn-secondary"
+                onclick="eliminaDato('desk', '<%= desk.id %>')"
+              >
+                Elimina
+              </button>
             </div>
           </div>
         </div>
         <% }); %>
       </div>
 
-      <br> <br>
+      <br />
+      <br />
       <div class="row mb-4">
         <div class="col-12">
-          <h4 style="text-decoration: underline; font-weight: 900;">Utenti</h4>
+          <h4 style="text-decoration: underline; font-weight: 900">Utenti</h4>
         </div>
+
+        <div class="col-12 border-bottom" style="font-weight: 900">
+          <div class="row p-2 custom_row">
+            <div class="col-4 mt-1">Nome Utente</div>
+            <div class="col-3">Email Utente</div>
+            <div class="col-2">Password Utente</div>
+            <div class="col-2 offset-1"></div>
+          </div>
+        </div>
+
         <% users.map((user) => { %>
         <div class="col-12">
           <div class="row p-2 custom_row">
             <div class="col-4 mt-1">
-                <input id="user_name__<%= user.id %>" class="form-control" type="text" value="<%= user.name %>">
+              <input
+                id="user_name__<%= user.id %>"
+                class="form-control"
+                type="text"
+                value="<%= user.name %>"
+              />
             </div>
             <div class="col-3">
               <input
@@ -117,76 +194,184 @@ desks:desks, user_name: user_name, page: 'settings' }) %>
                 placeholder="Nuova password"
               />
             </div>
-            
 
             <div class="col-2 offset-1">
-              <button id="user_salva__<%= user.id %>" class="btn custom-primary" onclick="salvaDato('user', '<%= user.id %>')">Salva</button>
-              <button id="user_elimina__<%= user.id %>" class="btn btn-secondary" onclick="eliminaDato('user', '<%= user.id %>')">Elimina</button>
+              <button
+                id="user_salva__<%= user.id %>"
+                class="btn custom-primary"
+                onclick="salvaDato('user', '<%= user.id %>')"
+              >
+                Salva
+              </button>
+              <button
+                id="user_elimina__<%= user.id %>"
+                class="btn btn-secondary"
+                onclick="eliminaDato('user', '<%= user.id %>')"
+              >
+                Elimina
+              </button>
             </div>
           </div>
         </div>
         <% }); %>
       </div>
 
+      <br />
+      <br />
+      <div class="row mb-4">
+        <div class="col-12">
+          <h4 style="text-decoration: underline; font-weight: 900">
+            Impostazioni Generali
+          </h4>
+        </div>
+
+        <div class="col-12" style="font-weight: 900">
+          <div class="row p-2 custom_row">
+            <div class="col-3 mt-1">Nome Impostazione</div>
+            <div class="col-3">Colore del testo</div>
+            <div class="col-3">Colore di sfondo</div>
+            <div class="col-2 offset-1"></div>
+          </div>
+
+          <% settings.map((item) => { %>
+          <div class="col-12">
+            <div class="row p-2 custom_row">
+              <div class="col-3 mt-1">
+                <input
+                  readonly
+                  disabled
+                  id="item_name__<%= item.id %>"
+                  class="form-control"
+                  type="text"
+                  value="<%= item.name %> (<%= item.description %>)"
+                />
+              </div>
+              <div class="col-3">
+                <input
+                  id="item_color__<%= item.id %>"
+                  class="jscolor form-control"
+                  value="<%= item.color  %>"
+                />
+              </div>
+
+              <div class="col-3">
+                <input
+                  id="item_backgroundColor__<%= item.id %>"
+                  class="jscolor form-control"
+                  value="<%= item.backgroundColor  %>"
+                />
+              </div>
+
+              <div class="col-2 offset-1">
+                <button
+                  id="item_salva__<%= item.id %>"
+                  class="btn custom-primary"
+                  onclick="salvaDato('settings', '<%= item.id %>')"
+                >
+                  Salva
+                </button>
+                <button
+                  id="item_elimina__<%= item.id %>"
+                  class="btn btn-secondary"
+                  onclick="eliminaDato('settings', '<%= item.id %>')"
+                >
+                  Elimina
+                </button>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener("DOMContentLoaded", function () {
     // disabilito tutti i button "elimina"
-    document.querySelectorAll('button[id^="service_elimina__"]').forEach((button) => {
-      button.disabled = true;
-    });
+    document
+      .querySelectorAll('button[id^="service_elimina__"]')
+      .forEach((button) => {
+        button.disabled = true;
+      });
 
-    document.querySelectorAll('button[id^="desk_elimina__"]').forEach((button) => {
-      button.disabled = true;
-    });
+    document
+      .querySelectorAll('button[id^="desk_elimina__"]')
+      .forEach((button) => {
+        button.disabled = true;
+      });
 
-    document.querySelectorAll('button[id^="user_elimina__"]').forEach((button) => {
-      button.disabled = true;
-    });
-    
+    document
+      .querySelectorAll('button[id^="user_elimina__"]')
+      .forEach((button) => {
+        button.disabled = true;
+      });
   });
 
   const socket = io();
 
   const salvaDato = (tipo, id) => {
-    switch(tipo){
-      case 'service':
-        const service_name = document.getElementById(`service_name__${id}`).value;
-        const service_code = document.getElementById(`service_code__${id}`).value;
-        const service_color = document.getElementById(`service_color__${id}`).value;
-        socket.emit('update-service', {id, service_name, service_code, service_color})
+    switch (tipo) {
+      case "service":
+        const service_name = document.getElementById(
+          `service_name__${id}`
+        ).value;
+        const service_code = document.getElementById(
+          `service_code__${id}`
+        ).value;
+        const service_color = document.getElementById(
+          `service_color__${id}`
+        ).value;
+        socket.emit("update-service", {
+          id,
+          service_name,
+          service_code,
+          service_color,
+        });
         break;
-      case 'desk':
+      case "desk":
         const desk_name = document.getElementById(`desk_name__${id}`).value;
         const desk_code = document.getElementById(`desk_code__${id}`).value;
         const desk_color = document.getElementById(`desk_color__${id}`).value;
-        socket.emit('update-desk', {id, desk_name, desk_code, desk_color})
+        socket.emit("update-desk", { id, desk_name, desk_code, desk_color });
         break;
-      case 'user':
+      case "user":
         const user_name = document.getElementById(`user_name__${id}`).value;
         const user_email = document.getElementById(`user_email__${id}`).value;
-        const user_password = document.getElementById(`user_password__${id}`).value;
-        socket.emit('update-user', {id, user_name, user_email, user_password})
+        const user_password = document.getElementById(
+          `user_password__${id}`
+        ).value;
+        socket.emit("update-user", {
+          id,
+          user_name,
+          user_email,
+          user_password,
+        });
+        break;
+      case "settings":
+        const item_color = document.getElementById(`item_color__${id}`).value;
+        const item_backgroundColor = document.getElementById(
+          `item_backgroundColor__${id}`
+        ).value;
+        socket.emit("update-settings", {
+          id,
+          item_color,
+          item_backgroundColor,
+        });
         break;
       default:
-          break;
+        break;
     }
-
-
-  }
+  };
 
   const eliminaDato = (tipo, id) => {
-    console.log('elimina: ', tipo, id);
-  }
+    console.log("elimina: ", tipo, id);
+  };
 
-  socket.on('update_data', (data) => {
+  socket.on("update_data", (data) => {
     window.location.reload();
-  })
+  });
 </script>
 
-<%- include('./partials/footer') %>
+<%- include('./partials/footer', {settings: settings}) %>
